@@ -2,10 +2,22 @@
 name = "rgmailer"
 version = "0.2.1"
 edition = "2021"
+authors = ["darryl.west@raincitysoftware.com"]
+rust-version = "1.73"
+description = "sends outgoing emails"
+keywords = ["smtp", "email", "gmail" ]
+license = "Apach-2.0"
+readme = "README.md"
+homepage = "https://github.com/darrylwest/rgmailer"
+repository = "https://github.com/darrylwest/rgmailer"
+exclude = [ ".github/*" ]
+publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.68"
 base64 = "0.13.1"
 fastrand = "1.8.0"
 lettre = "0.10.1"
+toml = "0.7.0"
