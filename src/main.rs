@@ -4,6 +4,8 @@ use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
 use std::env;
 
+pub mod otp;
+
 fn read_creds() -> Credentials {
     // read from key store
     use base64::decode;
@@ -19,12 +21,6 @@ fn read_creds() -> Credentials {
     let password = v[1].to_string();
 
     Credentials::new(username, password)
-}
-
-// generate a 6 digit random number
-fn generate_otp() -> u64 {
-    let range = 100_000..1_000_000_u64;
-    fastrand::u64(range)
 }
 
 fn main() -> Result<()> {
@@ -46,7 +42,7 @@ fn main() -> Result<()> {
     let to = "<dpw500@raincitysoftware.com>";
 
     let subject = "otp";
-    let otp = generate_otp();
+    let otp = otp::generate_otp();
     let body = format!("{}", otp);
 
     println!("otp: {} to: {}", otp, to);
@@ -74,17 +70,4 @@ fn main() -> Result<()> {
     }
 
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn gen_otp() {
-        for _i in 0..10 {
-            let otp = generate_otp();
-            println!("{}", otp);
-        }
-    }
 }
