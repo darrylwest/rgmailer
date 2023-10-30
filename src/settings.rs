@@ -55,6 +55,5 @@ mod tests {
         let creds = parse_creds(settings);
 
         println!("{:?}", creds);
-
     }
 }

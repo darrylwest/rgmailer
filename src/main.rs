@@ -1,7 +1,7 @@
 use anyhow::Result;
 use lettre::{Message, SmtpTransport, Transport};
-use rgmailer::settings::{Settings, parse_creds};
 use rgmailer::otp::generate_otp;
+use rgmailer::settings::{parse_creds, Settings};
 use std::env;
 
 fn main() -> Result<()> {
@@ -36,7 +36,8 @@ fn main() -> Result<()> {
         .body(body)
         .unwrap();
 
-    let settings = Settings::read(None).expect("should have read the settings file; is it missing?");
+    let settings =
+        Settings::read(None).expect("should have read the settings file; is it missing?");
     let creds = parse_creds(settings);
 
     // Open a remote connection to gmail
