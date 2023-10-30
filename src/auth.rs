@@ -1,4 +1,3 @@
-
 use lettre::transport::smtp::authentication::Credentials;
 use std::env;
 

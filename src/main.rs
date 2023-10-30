@@ -1,7 +1,7 @@
 use anyhow::Result;
 use lettre::{Message, SmtpTransport, Transport};
-use rgmailer::otp::generate_otp;
 use rgmailer::auth::read_creds;
+use rgmailer::otp::generate_otp;
 use std::env;
 
 fn main() -> Result<()> {
