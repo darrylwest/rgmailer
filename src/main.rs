@@ -1,4 +1,5 @@
 
+use anyhow::Result;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
 use std::env;
@@ -26,9 +27,18 @@ fn generate_otp() -> u64 {
     fastrand::u64(range)
 }
 
-fn main() {
+fn main() -> Result<()> {
     // todo - pick the toml file name from argv[1]
+    let argc = env::args().len();
+    if argc != 2 {
+        eprintln!("Error: Use: rgmailer file");
+        eprintln!("args: {}", argc);
+        panic!("must supply an envelope file");
+    }
+
     let mut args = env::args();
+
+
     let filename = args.nth(1).unwrap();
     
     println!("filename is {}", filename);
@@ -64,6 +74,8 @@ fn main() {
         Ok(_) => println!("Email sent successfully!"),
         Err(e) => panic!("Could not send email: {:?}", e),
     }
+
+    Ok(())
 }
 
 #[cfg(test)]

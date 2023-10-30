@@ -28,7 +28,7 @@ docs:
 
 # run the key-service back-end; start the db if necessary
 run:
-    cargo run --bin rgmailer
+    cargo run --bin rgmailer testfile.toml
 
 # build the release
 release:
