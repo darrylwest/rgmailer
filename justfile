@@ -26,7 +26,7 @@ build:
 docs:
     cargo doc --no-deps --open
 
-# run the key-service back-end; start the db if necessary
+# send a simple email
 run:
     cargo run --bin rgmailer testfile.toml
 

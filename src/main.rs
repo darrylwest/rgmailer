@@ -3,18 +3,18 @@ use anyhow::Result;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
 use std::env;
-use rgmailer::{otp::generate_otp};
+use rgmailer::otp::generate_otp;
 
 fn read_creds() -> Credentials {
     // read from key store
     use base64::decode;
 
     let b64 = env::var("EMAIL_CREDS").expect("should read creds from env");
-    let plain = decode(&b64).expect("should decode the b64");
+    let plain = decode(b64).expect("should decode the b64");
     let plain = String::from_utf8(plain).expect("should be string");
 
     // println!("{}", &plain);
-    let v: Vec<&str> = plain.split(":").collect();
+    let v: Vec<&str> = plain.split(':').collect();
 
     let username = v[0].to_string();
     let password = v[1].to_string();
