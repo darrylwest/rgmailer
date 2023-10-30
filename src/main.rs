@@ -37,8 +37,6 @@ fn main() -> Result<()> {
     }
 
     let mut args = env::args();
-
-
     let filename = args.nth(1).unwrap();
     
     println!("filename is {}", filename);
