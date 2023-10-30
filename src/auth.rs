@@ -1,17 +1,38 @@
+use anyhow::Result;
 use lettre::transport::smtp::authentication::Credentials;
-use std::env;
+use serde_derive::Deserialize;
+use std::fs;
 
 // TODO: change to RGMAILER with host, username, pw and return as a tuple
-const AUTH_KEY: &str = "EMAIL_CREDS";
+#[derive(Deserialize)]
+struct Smtp {
+    host: String,
+    username: String,
+    password: String,
+}
+
+#[derive(Deserialize)]
+struct Settings {
+    smtp: Smtp,
+}
+
+impl Settings {
+    fn read(filename: &str) -> Result<Settings> {
+        let text = fs::read_to_string(filename)?;
+        let settings: Settings = toml::from_str(&text)?;
+
+        Ok(settings)
+    }
+}
 
 pub fn read_creds() -> Credentials {
-    let plain = env::var(AUTH_KEY).expect("should read creds from env");
+    let settings = Settings::read("./settings.toml").expect("should read the settings file");
 
-    // println!("{}", &plain);
-    let v: Vec<&str> = plain.split(':').collect();
+    let host = settings.smtp.host;
+    let username = settings.smtp.username;
+    let password = settings.smtp.password;
 
-    let username = v[0].to_string();
-    let password = v[1].to_string();
+    println!("host: {}", host);
 
     // TODO: refactor to just return generic username and password
     Credentials::new(username, password)
@@ -22,8 +43,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn validate_creds() {
-        let creds = read_creds();
-        println!("creds: {:?}", creds)
+    fn validate_settings() {
+        let settings = Settings::read("tests/test-settings.toml").unwrap();
+
+        assert_eq!(settings.smtp.host, "gmail.smtp.net");
+        assert_eq!(settings.smtp.username, "tester@gmail.com");
+        assert_eq!(settings.smtp.password, "mysecretpw");
     }
 }

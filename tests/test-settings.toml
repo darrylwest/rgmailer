@@ -1,0 +1,8 @@
+
+[smtp]
+host = "gmail.smtp.net"
+username = "tester@gmail.com"
+password = "mysecretpw"
+
+
+
