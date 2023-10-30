@@ -5,12 +5,7 @@ use std::env;
 const AUTH_KEY: &str = "EMAIL_CREDS";
 
 pub fn read_creds() -> Credentials {
-    // read from key store
-    use base64::decode;
-
-    let b64 = env::var(AUTH_KEY).expect("should read creds from env");
-    let plain = decode(b64).expect("should decode the b64");
-    let plain = String::from_utf8(plain).expect("should be string");
+    let plain = env::var(AUTH_KEY).expect("should read creds from env");
 
     // println!("{}", &plain);
     let v: Vec<&str> = plain.split(':').collect();
