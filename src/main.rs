@@ -3,8 +3,7 @@ use anyhow::Result;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
 use std::env;
-
-pub mod otp;
+use rgmailer::{otp::generate_otp};
 
 fn read_creds() -> Credentials {
     // read from key store
@@ -42,7 +41,7 @@ fn main() -> Result<()> {
     let to = "<dpw500@raincitysoftware.com>";
 
     let subject = "otp";
-    let otp = otp::generate_otp();
+    let otp = generate_otp();
     let body = format!("{}", otp);
 
     println!("otp: {} to: {}", otp, to);
