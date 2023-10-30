@@ -1,10 +1,10 @@
 
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
+use std::env;
 
 fn read_creds() -> Credentials {
     // read from key store
-    use std::env;
     use base64::decode;
 
     let b64 = env::var("EMAIL_CREDS").expect("should read creds from env");
@@ -27,10 +27,16 @@ fn generate_otp() -> u64 {
 }
 
 fn main() {
+    // todo - pick the toml file name from argv[1]
+    let mut args = env::args();
+    let filename = args.nth(1).unwrap();
+    
+    println!("filename is {}", filename);
+
+    // todo - read to, from, subject and body from toml file
     let from = "darryl.west<darryl.west@raincitysoftware.com>";
     let to = "<dpw500@raincitysoftware.com>";
 
-    // todo - write the otp file
     let subject = "otp";
     let otp = generate_otp();
     let body = format!("{}", otp);
