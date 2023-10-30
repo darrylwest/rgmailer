@@ -40,6 +40,14 @@ install:
     just release
     cp target/release/rgmailer ~/.cargo/bin/
 
+# format the code
+format:
+    cargo fmt
+
+# run clippy
+clippy:
+    cargo clippy
+
 # watch the current folders and run tests when a file is changed
 watch:
     watchexec -d 500 -c -e rs cargo test && cargo fmt && cargo clippy
