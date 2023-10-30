@@ -1,4 +1,3 @@
-
 // generate a 6 digit random number
 pub fn generate_otp() -> u64 {
     let range = 100_000..1_000_000_u64;

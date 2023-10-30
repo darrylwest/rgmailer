@@ -1,9 +1,8 @@
-
 use anyhow::Result;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
-use std::env;
 use rgmailer::otp::generate_otp;
+use std::env;
 
 fn read_creds() -> Credentials {
     // read from key store
@@ -33,7 +32,7 @@ fn main() -> Result<()> {
 
     let mut args = env::args();
     let filename = args.nth(1).unwrap();
-    
+
     println!("filename is {}", filename);
 
     // todo - read to, from, subject and body from toml file
