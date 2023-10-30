@@ -52,6 +52,10 @@ clippy:
 watch:
     watchexec -d 500 -c -e rs cargo test && cargo fmt && cargo clippy
 
+# pre-commit
+pre:
+    just test format clippy
+
 # cover - runs code test coverage report and writes to coverage folder
 cover:
   cargo tarpaulin --out html --output-dir coverage && scp coverage/tarpaulin-report.html dpw@raincitysoftware.com:raincitysoftware.com/rxkv/index.html
