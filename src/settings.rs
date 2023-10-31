@@ -3,14 +3,14 @@ use lettre::transport::smtp::authentication::Credentials;
 use serde_derive::Deserialize;
 use std::fs;
 
-#[derive(Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Smtp {
     pub host: String,
     pub username: String,
     pub password: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Settings {
     pub smtp: Smtp,
 }

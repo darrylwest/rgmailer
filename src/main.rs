@@ -5,7 +5,7 @@ use rgmailer::settings::{parse_creds, Settings};
 use std::env;
 
 fn main() -> Result<()> {
-    // todo - pick the toml file name from argv[1]
+    // TODO: move this to cli.rs
     let argc = env::args().len();
     if argc != 2 {
         eprintln!("Error: Use: rgmailer file");
@@ -18,7 +18,7 @@ fn main() -> Result<()> {
 
     println!("filename is {}", filename);
 
-    // todo - read to, from, subject and body from toml file
+    // TODO: read to, from, subject and body from toml file
     let from = "darryl.west<darryl.west@raincitysoftware.com>";
     let to = "<dpw500@raincitysoftware.com>";
 
@@ -38,10 +38,11 @@ fn main() -> Result<()> {
 
     let settings =
         Settings::read(None).expect("should have read the settings file; is it missing?");
-    let creds = parse_creds(settings);
+    let creds = parse_creds(settings.clone());
 
-    // Open a remote connection to gmail
-    let mailer = SmtpTransport::relay("smtp.gmail.com")
+    // Open a remote connection to gmail:w
+    let host = settings.clone().smtp.host;
+    let mailer = SmtpTransport::relay(&host)
         .unwrap()
         .credentials(creds)
         .build();
