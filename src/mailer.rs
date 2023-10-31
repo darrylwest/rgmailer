@@ -1,4 +1,5 @@
 
+
 use anyhow::Result;
 use lettre::{Message, SmtpTransport, Transport};
 use crate::settings::{parse_creds, Settings};
@@ -10,14 +11,15 @@ pub fn prepare_message(envelope: Envelope) -> Result<()> {
     println!("{:?}", envelope);
 
     // TODO: read to, from, subject and body from toml file
-    let from = "darryl.west<darryl.west@raincitysoftware.com>";
-    let to = "<dpw500@raincitysoftware.com>";
+    let from = envelope.from;
+    let to = envelope.to;
 
-    let subject = "otp";
+    let subject = envelope.subject;
     let otp = generate_otp();
-    let body = format!("{}", otp);
+    let body = format!("{}\n{}", otp, envelope.body);
 
     println!("otp: {} to: {}", otp, to);
+
     let email = Message::builder()
         .from(from.parse().unwrap())
         .reply_to(from.parse().unwrap())
