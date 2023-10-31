@@ -1,6 +1,6 @@
 use anyhow::Result;
-use std::fs;
 use std::ffi::OsStr;
+use std::fs;
 use std::path::{Component, PathBuf};
 
 // finds the absolute path; substibutes the filenames parent with to_target
@@ -23,7 +23,7 @@ pub fn rename_from_to(filename: &str, to_target: &str) -> (PathBuf, PathBuf) {
 pub fn move_file(from: PathBuf, to: PathBuf) -> Result<()> {
     match fs::rename(from, to) {
         Ok(_) => Ok(()),
-        Err(e) => Err(e.into())
+        Err(e) => Err(e.into()),
     }
 }
 
@@ -37,7 +37,7 @@ mod tests {
     fn test_move_to_sent() {
         // remove the file first?
         let filename = "tests/queue/sent-message.toml";
-        let (frompath, topath ) = rename_from_to(filename, "sent");
+        let (frompath, topath) = rename_from_to(filename, "sent");
         println!("from: {} to: {}", frompath.display(), topath.display());
         let resp = fs::remove_file(topath.clone());
         println!("{:?}", resp);
@@ -53,7 +53,7 @@ mod tests {
     fn test_rename_from_to() {
         let filename = "tests/queue/7mNdj105Ch0c.toml";
 
-        let (frompath, topath ) = rename_from_to(filename, "sent");
+        let (frompath, topath) = rename_from_to(filename, "sent");
 
         println!("from: {} to: {}", frompath.display(), topath.display());
 

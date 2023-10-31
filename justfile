@@ -2,7 +2,6 @@
 project := "rgmailer"
 
 alias t := test
-alias ta := test-all
 alias b := build
 alias rel := release
 alias r := run
@@ -10,13 +9,8 @@ alias r := run
 # run the standard tests
 test:
     clear
-    tar xzvf test-setup.tgz
+    tar xzf test-setup.tgz
     cargo test
-
-# run the standard tests + clippy and fmt
-test-all:
-    clear
-    cargo test && cargo fmt && cargo clippy
 
 # build the debug target
 build:
@@ -59,7 +53,7 @@ pre:
 
 # cover - runs code test coverage report and writes to coverage folder
 cover:
-    tar xzvf test-setup.tgz
+    tar xzf test-setup.tgz
     cargo tarpaulin --out html --output-dir coverage
 
 # start a http server in the coverage folder
