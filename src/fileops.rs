@@ -42,11 +42,13 @@ mod tests {
         let resp = fs::remove_file(topath.clone());
         println!("{:?}", resp);
 
-        let resp = move_file(frompath, topath.clone()).unwrap();
+        let resp = move_file(frompath.clone(), topath.clone()).unwrap();
 
         println!("{:?}", resp);
 
-        let _ = fs::remove_file(topath.clone());
+        // now move it back
+        let resp = move_file(topath.clone(), frompath.clone()).unwrap();
+        println!("{:?}", resp);
     }
 
     #[test]
@@ -59,5 +61,6 @@ mod tests {
 
         assert!(frompath.ends_with("rgmailer/tests/queue/7mNdj105Ch0c.toml"));
         assert!(topath.ends_with("rgmailer/tests/sent/7mNdj105Ch0c.toml"));
+
     }
 }
