@@ -43,7 +43,10 @@ pub fn send(settings: Settings, message: Message) -> Result<()> {
     // Send the email
     match mailer.send(&message) {
         Ok(_) => println!("Email sent successfully!"),
-        Err(e) => panic!("Could not send email: {:?}", e),
+        Err(e) => {
+            eprint!("Could not send email: {:?}", e);
+            return Err(e.into());
+        }
     }
 
     Ok(())
@@ -63,5 +66,17 @@ mod tests {
         let message = prepare_message(envelope);
 
         println!("msg: {:?}", message);
+    }
+
+    #[test]
+    fn sent_it() {
+        let settings = Settings::read(Some(String::from("tests/test-settings.toml"))).unwrap();
+        let filename = "tests/test-message.toml";
+        let envelope = Envelope::read_file(filename).unwrap();
+        let message = prepare_message(envelope);
+
+        let resp = send(settings, message);
+        println!("resp: {:?}", resp);
+        assert!(true);
     }
 }
