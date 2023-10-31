@@ -29,10 +29,8 @@ pub fn prepare_message(envelope: Envelope) -> Message {
         .unwrap()
 }
 
-pub fn send(message: Message) -> Result<()> {
+pub fn send(settings: Settings, message: Message) -> Result<()> {
 
-    let settings =
-        Settings::read(None).expect("should have read the settings file; is it missing?");
     let creds = parse_creds(settings.clone());
 
     // Open a remote connection to gmail
