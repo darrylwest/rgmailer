@@ -10,6 +10,7 @@ alias r := run
 # run the standard tests
 test:
     clear
+    tar xzvf test-setup.tgz
     cargo test
 
 # run the standard tests + clippy and fmt
