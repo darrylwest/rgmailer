@@ -1,13 +1,10 @@
-
-
+use crate::envelope::Envelope;
+use crate::otp::generate_otp;
+use crate::settings::{parse_creds, Settings};
 use anyhow::Result;
 use lettre::{Message, SmtpTransport, Transport};
-use crate::settings::{parse_creds, Settings};
-use crate::otp::generate_otp;
-use crate::envelope::Envelope;
 
 pub fn prepare_message(envelope: Envelope) -> Message {
-
     println!("{:?}", envelope);
 
     // TODO: read to, from, subject and body from toml file
@@ -30,7 +27,6 @@ pub fn prepare_message(envelope: Envelope) -> Message {
 }
 
 pub fn send(settings: Settings, message: Message) -> Result<()> {
-
     let creds = parse_creds(settings.clone());
 
     // Open a remote connection to gmail
@@ -42,10 +38,10 @@ pub fn send(settings: Settings, message: Message) -> Result<()> {
 
     // Send the email
     match mailer.send(&message) {
-        Ok(_) => return Ok(()),
+        Ok(_) => Ok(()),
         Err(e) => {
             eprint!("Could not send email: {:?}", e);
-            return Err(e.into());
+            Err(e.into())
         }
     }
 }
