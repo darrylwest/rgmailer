@@ -1,6 +1,6 @@
 
 [smtp]
-host = "gmail.smtp.net"
+host = "smtp.gmail.net"
 username = "tester@gmail.com"
 password = "mysecretpw"
 

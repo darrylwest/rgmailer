@@ -22,6 +22,8 @@ impl Settings {
             None => String::from("./settings.toml"),
         };
 
+        println!("settings file: {}", filename);
+
         let text = fs::read_to_string(filename)?;
         let settings: Settings = toml::from_str(&text)?;
 
@@ -44,7 +46,7 @@ mod tests {
     fn validate_settings() {
         let settings = Settings::read(Some(String::from("tests/test-settings.toml"))).unwrap();
 
-        assert_eq!(settings.smtp.host, "gmail.smtp.net");
+        assert_eq!(settings.smtp.host, "smtp.gmail.net");
         assert_eq!(settings.smtp.username, "tester@gmail.com");
         assert_eq!(settings.smtp.password, "mysecretpw");
     }
