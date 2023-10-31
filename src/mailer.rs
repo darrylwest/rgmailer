@@ -42,14 +42,12 @@ pub fn send(settings: Settings, message: Message) -> Result<()> {
 
     // Send the email
     match mailer.send(&message) {
-        Ok(_) => println!("Email sent successfully!"),
+        Ok(_) => return Ok(()),
         Err(e) => {
             eprint!("Could not send email: {:?}", e);
             return Err(e.into());
         }
     }
-
-    Ok(())
 }
 
 #[cfg(test)]
