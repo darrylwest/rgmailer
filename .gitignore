@@ -1,4 +1,3 @@
 /target
 .env
 settings.toml
-/coverage
