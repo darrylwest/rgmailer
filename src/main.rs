@@ -15,12 +15,13 @@ fn main() -> Result<()> {
 
     let mut args = env::args();
     let filename = args.nth(1).unwrap();
+    println!("envelope: {}", filename);
+    // cli -- end
 
-    println!("filename is {}", filename);
     let envelope = Envelope::read_file(filename.as_str()).unwrap();
-    let settings = Settings::read(None).expect("settings file not found");
-
+    // process the envelope if necessary
     let message = mailer::prepare_message(envelope);
+    let settings = Settings::read(None).expect("settings file not found");
 
     mailer::send(settings, message)
 }

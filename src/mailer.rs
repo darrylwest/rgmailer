@@ -48,3 +48,20 @@ pub fn send(settings: Settings, message: Message) -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn prep_message() {
+        let filename = "tests/test-message.toml";
+        let envelope = Envelope::read_file(filename).unwrap();
+
+        println!("env: {:?}", envelope);
+
+        let message = prepare_message(envelope);
+
+        println!("msg: {:?}", message);
+    }
+}
