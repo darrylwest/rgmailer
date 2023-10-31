@@ -27,11 +27,10 @@ impl Config {
     }
 }
 
-fn process_request(config: Config) -> Result<()> {
+fn process_request(config: Config, settings: Settings) -> Result<()> {
     let envelope = Envelope::read_file(config.envelope_file.as_str()).unwrap();
     // process the envelope if necessary
     let message = mailer::prepare_message(envelope);
-    let settings = Settings::read(None).expect("settings file not found");
 
     if !config.dryrun {
         return mailer::send(settings, message);
@@ -50,7 +49,8 @@ fn main() -> Result<()> {
     }
 
     let config = Config::parse_cli(env::args().collect()).unwrap();
-    process_request(config)
+    let settings = Settings::read(None).expect("settings file not found");
+    process_request(config, settings)
 }
 
 #[cfg(test)]
@@ -59,13 +59,14 @@ mod tests {
 
     #[test]
     fn proc_request() {
+        let settings = Settings::read(Some(String::from("tests/test-settings.toml"))).unwrap();
         let config = Config {
             home: "home".to_string(),
             envelope_file: "tests/test-message.toml".to_string(),
             dryrun: true,
         };
 
-        let _resp = process_request(config).unwrap();
+        let _resp = process_request(config, settings).unwrap();
         // assert!(resp);
     }
 
