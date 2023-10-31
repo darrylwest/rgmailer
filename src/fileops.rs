@@ -61,6 +61,5 @@ mod tests {
 
         assert!(frompath.ends_with("rgmailer/tests/queue/7mNdj105Ch0c.toml"));
         assert!(topath.ends_with("rgmailer/tests/sent/7mNdj105Ch0c.toml"));
-
     }
 }
