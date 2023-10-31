@@ -3,8 +3,11 @@ use anyhow::Result;
 use lettre::{Message, SmtpTransport, Transport};
 use crate::settings::{parse_creds, Settings};
 use crate::otp::generate_otp;
+use crate::envelope::Envelope;
 
-pub fn prepare_message() -> Result<()> {
+pub fn prepare_message(envelope: Envelope) -> Result<()> {
+
+    println!("{:?}", envelope);
 
     // TODO: read to, from, subject and body from toml file
     let from = "darryl.west<darryl.west@raincitysoftware.com>";
