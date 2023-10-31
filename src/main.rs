@@ -12,19 +12,11 @@ struct Config {
 }
 
 impl Config {
-    fn parse_cli() -> Result<Config> {
-        // TODO: move this to cli.rs?
-        let argc = env::args().len();
-        if argc != 2 {
-            eprintln!("Error: Use: rgmailer file");
-            eprintln!("args: {}", argc);
-            panic!("must supply an envelope file");
-        }
+    fn parse_cli(args: Vec<String>) -> Result<Config> {
 
         // simulate get these from the command line
         let dryrun = false;
-        let mut args = env::args();
-        let filename = args.nth(1).unwrap();
+        let filename = args[1].to_string();
 
         let config = Config{
             home: "home".to_string(),
@@ -51,7 +43,16 @@ fn process_request(config: Config) -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    process_request(Config::parse_cli().unwrap())
+    // TODO: move this to cli.rs?k
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 2 {
+        eprintln!("Error: Use: rgmailer file");
+        eprintln!("args: {:?}", args);
+        panic!("must supply an envelope file");
+    }
+
+    let config = Config::parse_cli(env::args().collect()).unwrap();
+    process_request(config)
 }
 
 #[cfg(test)]
@@ -68,5 +69,18 @@ mod tests {
 
         let _resp = process_request(config).unwrap();
         // assert!(resp);
+    }
+
+    #[test]
+    fn parce_cli() {
+        let args = [
+            "rgmailer".to_string(), 
+            "tests/test-message.toml".to_string(), 
+            "--dryrun".to_string(),
+        ];
+
+        let config = Config::parse_cli(args.to_vec()).unwrap();
+        assert!(config.dryrun == false);
+
     }
 }
