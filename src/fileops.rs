@@ -1,7 +1,22 @@
 use anyhow::Result;
+use std::env;
 use std::ffi::OsStr;
 use std::fs;
 use std::path::{Component, PathBuf};
+
+pub fn user_home() -> PathBuf {
+    let home = env::var("HOME").expect("should have a home");
+    PathBuf::from(home)
+}
+
+pub fn app_home() -> PathBuf {
+    let home = env::var("HOME").expect("should have a home");
+
+    let abs_home = fs::canonicalize(home.as_str()).expect("home should have an absolute path");
+    let full_home = abs_home.as_path().join(".ngmailer");
+
+    full_home
+}
 
 // finds the absolute path; substibutes the filenames parent with to_target
 pub fn rename_from_to(filename: &str, to_target: &str) -> (PathBuf, PathBuf) {
@@ -31,7 +46,17 @@ pub fn move_file(from: PathBuf, to: PathBuf) -> Result<()> {
 mod tests {
     use super::*;
 
-    // create/call a function to build the test home strucure
+    #[test]
+    fn test_user_home() {
+        let home = user_home();
+        println!("user home: {}", home.display());
+    }
+
+    #[test]
+    fn test_app_home() {
+        let home = app_home();
+        println!("app home: {}", home.display());
+    }
 
     #[test]
     fn test_move_to_sent() {
