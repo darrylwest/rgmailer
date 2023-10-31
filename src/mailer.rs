@@ -6,7 +6,7 @@ use crate::settings::{parse_creds, Settings};
 use crate::otp::generate_otp;
 use crate::envelope::Envelope;
 
-pub fn prepare_message(envelope: Envelope) -> Result<()> {
+pub fn prepare_message(envelope: Envelope) -> Message {
 
     println!("{:?}", envelope);
 
@@ -20,13 +20,16 @@ pub fn prepare_message(envelope: Envelope) -> Result<()> {
 
     println!("otp: {} to: {}", otp, to);
 
-    let email = Message::builder()
+    Message::builder()
         .from(from.parse().unwrap())
         .reply_to(from.parse().unwrap())
         .to(to.parse().unwrap())
         .subject(subject)
         .body(body)
-        .unwrap();
+        .unwrap()
+}
+
+pub fn send(message: Message) -> Result<()> {
 
     let settings =
         Settings::read(None).expect("should have read the settings file; is it missing?");
@@ -40,7 +43,7 @@ pub fn prepare_message(envelope: Envelope) -> Result<()> {
         .build();
 
     // Send the email
-    match mailer.send(&email) {
+    match mailer.send(&message) {
         Ok(_) => println!("Email sent successfully!"),
         Err(e) => panic!("Could not send email: {:?}", e),
     }

@@ -1,5 +1,5 @@
 use anyhow::Result;
-use rgmailer::mailer::prepare_message;
+use rgmailer::mailer;
 use rgmailer::envelope::Envelope;
 use std::env;
 
@@ -18,5 +18,7 @@ fn main() -> Result<()> {
     println!("filename is {}", filename);
     let envelope = Envelope::read_file(filename.as_str()).unwrap();
 
-    return prepare_message(envelope);
+    let message = mailer::prepare_message(envelope);
+
+    mailer::send(message)
 }
