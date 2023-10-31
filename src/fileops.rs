@@ -18,6 +18,18 @@ pub fn app_home() -> PathBuf {
     full_home
 }
 
+pub fn sub_folders(app_home: PathBuf) -> Vec<PathBuf> {
+    let list = [
+        app_home.as_path().join("queue"),
+        app_home.as_path().join("sent"),
+        app_home.as_path().join("errors"),
+        app_home.as_path().join("logs"),
+        app_home.as_path().join("templates"),
+    ];
+
+    Vec::from(list)
+}
+
 // finds the absolute path; substibutes the filenames parent with to_target
 pub fn rename_from_to(filename: &str, to_target: &str) -> (PathBuf, PathBuf) {
     let path = PathBuf::from(filename);
@@ -45,6 +57,19 @@ pub fn move_file(from: PathBuf, to: PathBuf) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_sub_folders() {
+        let home = PathBuf::from("tests");
+        let folders = sub_folders(home);
+
+        println!("subs: {:?}", folders);
+        assert_eq!(folders.len(), 5);
+
+        for path in folders {
+            assert!(path.exists());
+        }
+    }
 
     #[test]
     fn test_user_home() {
