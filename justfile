@@ -59,11 +59,12 @@ pre:
 
 # cover - runs code test coverage report and writes to coverage folder
 cover:
-  cargo tarpaulin --out html --output-dir coverage && scp coverage/tarpaulin-report.html dpw@raincitysoftware.com:raincitysoftware.com/rxkv/index.html
+    tar xzvf test-setup.tgz
+    cargo tarpaulin --out html --output-dir coverage
 
 # start a http server in the coverage folder
 serve-cover:
-  cd coverage && mv tarpaulin-report.html index.html && python3 -m http.server 8080
+    cd coverage && mv tarpaulin-report.html index.html && python3 -m http.server 8080
 
 # merge the develop branch to main
 merge:
