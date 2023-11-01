@@ -21,7 +21,7 @@ pub struct Config {
     pub verbose: bool,
 
     /// specifiy the envelope toml file with to, from, subject, body and optional process keys
-    #[clap(short, long, value_parser)]
+    #[clap(value_parser)]
     pub envelope: String,
 
     /// specify the application home, defaults to ~/.rgmailer
@@ -38,11 +38,13 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
     // process the envelope if necessary
     let message = mailer::prepare_message(envelope);
 
-    if !config.dryrun {
-        return mailer::send(settings, message);
+    let dryrun = config.dryrun;
+    if dryrun {
+        println!("Woot! dry run success.");
+        Ok(())
+    } else {
+        mailer::send(settings, message)
     }
-
-    Ok(())
 }
 
 fn main() -> Result<()> {
