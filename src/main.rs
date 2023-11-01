@@ -5,7 +5,7 @@
 
 use anyhow::Result;
 use clap::Parser;
-use log::{info, warn};
+use log::{error, info, warn};
 use rgmailer::envelope::Envelope;
 use rgmailer::mailer;
 use rgmailer::settings::Settings;
@@ -46,22 +46,28 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
     }
 }
 
-
 fn main() -> Result<()> {
-
     // read and embed the config; run-time write to the config folder then init the logger
     // let config_str = include_str!("../config/console.yaml");
     // println!("{}", config_str);
-    log4rs::init_file("config/rolling.yaml", Default::default())?;
-
-    info!("logger started.");
+    // TODO check for the logs folder; if not found, then start the console
+    match log4rs::init_file("config/rolling.yaml", Default::default()) {
+        Ok(_) => info!("logger started."),
+        Err(e) => {
+            eprintln!("error starting logger: {:?}", e);
+        }
+    }
 
     let config = Config::parse();
     println!("cli: {:?}", config);
 
-    let settings = Settings::read(None).expect("settings file not found");
-
-    process_request(config, settings)
+    match Settings::read(None) {
+        Ok(settings) => process_request(config, settings),
+        Err(e) => {
+            error!("could not read settings file!");
+            Err(e)
+        }
+    }
 }
 
 #[cfg(test)]

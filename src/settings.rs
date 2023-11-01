@@ -44,7 +44,9 @@ mod tests {
 
     #[test]
     fn validate_settings() {
-        let settings = Settings::read(Some(String::from("tests/test-settings.toml"))).unwrap();
+        let settings_file = String::from("tests/test-settings.toml");
+        let expected = "should read the settings from: {} settings_file";
+        let settings = Settings::read(Some(settings_file)).expect(expected);
 
         assert_eq!(settings.smtp.host, "smtp.gmail.net");
         assert_eq!(settings.smtp.username, "tester@gmail.com");
@@ -53,7 +55,9 @@ mod tests {
 
     #[test]
     fn validate_creds() {
-        let settings = Settings::read(Some(String::from("tests/test-settings.toml"))).unwrap();
+        let settings_file = String::from("tests/test-settings.toml");
+        let expected = "should read the settings from: {} settings_file";
+        let settings = Settings::read(Some(settings_file)).expect(expected);
         let creds = parse_creds(settings);
 
         println!("{:?}", creds);
