@@ -1,4 +1,5 @@
 use anyhow::Result;
+use log::info;
 use serde_derive::Deserialize;
 use std::fs;
 
@@ -13,7 +14,9 @@ pub struct Envelope {
 impl Envelope {
     pub fn read_file(filename: &str) -> Result<Envelope> {
         let text = fs::read_to_string(filename)?;
-        let envelope: Envelope = toml::from_str(&text).unwrap();
+        let envelope: Envelope = toml::from_str(&text)?;
+
+        info!("envelope read and parsed from: {}", filename);
 
         Ok(envelope)
     }
