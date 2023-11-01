@@ -24,4 +24,5 @@ log = "0.4.20"
 log4rs = "1.2.0"
 serde = { version = "1.0.190", features = ["derive"] }
 serde_derive = "1.0.190"
+serde_yaml = "0.9.27"
 toml = "0.8.5"

@@ -46,8 +46,13 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
     }
 }
 
+
 fn main() -> Result<()> {
-    log4rs::init_file("config/console.yaml", Default::default())?;
+
+    // read and embed the config; run-time write to the config folder then init the logger
+    // let config_str = include_str!("../config/console.yaml");
+    // println!("{}", config_str);
+    log4rs::init_file("config/rolling.yaml", Default::default())?;
 
     info!("logger started.");
 
