@@ -23,7 +23,7 @@ docs:
 
 # send a simple email
 run:
-    cargo run --bin rgmailer -- --envelope home/queue/7mNdj105Ch0c.toml
+    cargo run --bin rgmailer -- --dryrun home/queue/7mNdj105Ch0c.toml
 
 # build the release
 release:

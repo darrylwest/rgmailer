@@ -839,6 +839,7 @@ dependencies = [
  "clap",
  "fastrand",
  "lettre",
+ "log",
  "log4rs",
  "serde",
  "serde_derive",

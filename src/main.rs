@@ -5,16 +5,13 @@
 
 use anyhow::Result;
 use clap::Parser;
+use log::{info, warn};
 use rgmailer::envelope::Envelope;
 use rgmailer::mailer;
 use rgmailer::settings::Settings;
 
 #[derive(Debug, Default, Parser)]
-#[clap(name = "ngmailer")]
-#[clap(author)]
-#[clap(version)]
-#[clap(long_about = None)]
-#[clap(about)]
+#[clap(name = "ngmailer", author, version, about, long_about = None)]
 pub struct Config {
     /// set verbose to show log message on the console
     #[clap(short, long, value_parser)]
@@ -34,6 +31,7 @@ pub struct Config {
 }
 
 fn process_request(config: Config, settings: Settings) -> Result<()> {
+    info!("process reequest startup with config: {:?}", config);
     let envelope = Envelope::read_file(config.envelope.as_str()).unwrap();
     // process the envelope if necessary
     let message = mailer::prepare_message(envelope);
@@ -41,6 +39,7 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
     let dryrun = config.dryrun;
     if dryrun {
         println!("Woot! dry run success.");
+        warn!("this was a dry run");
         Ok(())
     } else {
         mailer::send(settings, message)
@@ -48,6 +47,10 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
 }
 
 fn main() -> Result<()> {
+    log4rs::init_file("config/console.yaml", Default::default())?;
+
+    info!("logger started.");
+
     let config = Config::parse();
     println!("cli: {:?}", config);
 
