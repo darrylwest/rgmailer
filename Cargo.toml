@@ -1,10 +1,10 @@
 [package]
 name = "rgmailer"
-version = "0.2.1"
+version = "0.2.3"
 edition = "2021"
 authors = ["darryl.west@raincitysoftware.com"]
 rust-version = "1.70"
-description = "sends outgoing emails"
+description = "Sends a simple email message using a structured toml file called an envelope."
 keywords = ["smtp", "email", "gmail" ]
 license = "Apach-2.0"
 readme = "README.md"

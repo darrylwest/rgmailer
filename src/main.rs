@@ -1,34 +1,40 @@
+//! rgmailer
+//!
+//! A simple mailer to send plain text messages through smtp
+//!
+
 use anyhow::Result;
+use clap::Parser;
 use rgmailer::envelope::Envelope;
 use rgmailer::mailer;
 use rgmailer::settings::Settings;
-use std::env;
 
-#[derive(Clone, Debug, PartialEq)]
-struct Config {
-    home: String,
-    envelope_file: String,
-    dryrun: bool,
-}
+#[derive(Debug, Default, Parser)]
+#[clap(name = "ngmailer")]
+#[clap(author)]
+#[clap(version)]
+#[clap(long_about = None)]
+#[clap(about)]
+pub struct Config {
+    /// set verbose to show log message on the console
+    #[clap(short, long, value_parser)]
+    pub verbose: bool,
 
-impl Config {
-    fn parse_cli(args: Vec<String>) -> Result<Config> {
-        // simulate get these from the command line
-        let drun = false;
-        let filename = args[1].to_string();
+    /// specifiy the envelope toml file with to, from, subject, body and optional process keys
+    #[clap(short, long, value_parser)]
+    pub envelope: String,
 
-        let config = Config {
-            home: "home".to_string(),
-            envelope_file: filename,
-            dryrun: drun,
-        };
+    /// specify the application home, defaults to ~/.rgmailer
+    #[clap(long, default_value_t = String::from("~/.rgmailer"))]
+    pub home: String,
 
-        Ok(config)
-    }
+    /// parse the envelope, create the message, login to the smtp server but skip the send
+    #[clap(short, long, value_parser)]
+    pub dryrun: bool,
 }
 
 fn process_request(config: Config, settings: Settings) -> Result<()> {
-    let envelope = Envelope::read_file(config.envelope_file.as_str()).unwrap();
+    let envelope = Envelope::read_file(config.envelope.as_str()).unwrap();
     // process the envelope if necessary
     let message = mailer::prepare_message(envelope);
 
@@ -40,16 +46,11 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    // TODO: move this to cli.rs?k
-    let args: Vec<String> = env::args().collect();
-    if args.len() != 2 {
-        eprintln!("Error: Use: rgmailer file");
-        eprintln!("args: {:?}", args);
-        panic!("must supply an envelope file");
-    }
+    let config = Config::parse();
+    println!("cli: {:?}", config);
 
-    let config = Config::parse_cli(env::args().collect()).unwrap();
     let settings = Settings::read(None).expect("settings file not found");
+
     process_request(config, settings)
 }
 
@@ -62,23 +63,12 @@ mod tests {
         let settings = Settings::read(Some(String::from("tests/test-settings.toml"))).unwrap();
         let config = Config {
             home: "home".to_string(),
-            envelope_file: "tests/test-message.toml".to_string(),
+            envelope: "tests/test-message.toml".to_string(),
             dryrun: true,
+            verbose: false,
         };
 
         let _resp = process_request(config, settings).unwrap();
         // assert!(resp);
-    }
-
-    #[test]
-    fn parce_cli() {
-        let args = [
-            "rgmailer".to_string(),
-            "tests/test-message.toml".to_string(),
-            "--dryrun".to_string(),
-        ];
-
-        let config = Config::parse_cli(args.to_vec()).unwrap();
-        assert!(config.dryrun == false);
     }
 }
