@@ -52,7 +52,7 @@ fn main() -> Result<()> {
     // println!("{}", config_str);
     // TODO check for the logs folder; if not found, then start the console
     match log4rs::init_file("config/rolling.yaml", Default::default()) {
-        Ok(_) => info!("logger started."),
+        Ok(_) => info!("\n******************************************** logger started ******"),
         Err(e) => {
             eprintln!("error starting logger: {:?}", e);
         }

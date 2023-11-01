@@ -1,4 +1,5 @@
 use anyhow::Result;
+use log::{error, info};
 use std::env;
 use std::ffi::OsStr;
 use std::fs;
@@ -25,11 +26,29 @@ pub fn sub_folders(app_home: PathBuf) -> Vec<PathBuf> {
         app_home.as_path().join("errors"),
         app_home.as_path().join("logs"),
         app_home.as_path().join("templates"),
+        app_home.as_path().join("config"),
     ];
 
     Vec::from(list)
 }
 
+pub fn init_folders(app_home: PathBuf) -> Result<()> {
+    let folders = sub_folders(app_home);
+    for folder in folders {
+        if !folder.exists() {
+            let msg = format!("creating: {}", folder.display());
+            match fs::create_dir_all(folder) {
+                Ok(_) => info!("{}", msg),
+                Err(e) => {
+                    error!("error: {} {}", e, msg);
+                    return Err(e.into());
+                }
+            }
+        }
+    }
+
+    Ok(())
+}
 // finds the absolute path; substibutes the filenames parent with to_target
 pub fn rename_from_to(filename: &str, to_target: &str) -> (PathBuf, PathBuf) {
     let path = PathBuf::from(filename);
@@ -61,10 +80,12 @@ mod tests {
     #[test]
     fn test_sub_folders() {
         let home = PathBuf::from("tests");
-        let folders = sub_folders(home);
+        let folders = sub_folders(home.clone());
 
         println!("subs: {:?}", folders);
-        assert_eq!(folders.len(), 5);
+        assert_eq!(folders.len(), 6);
+
+        init_folders(home.clone()).unwrap();
 
         for path in folders {
             assert!(path.exists());

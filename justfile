@@ -9,7 +9,6 @@ alias r := run
 # run the standard tests
 test:
     clear
-    tar xzf test-setup.tgz
     cargo test
 
 # build the debug target
