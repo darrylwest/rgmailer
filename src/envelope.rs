@@ -15,12 +15,7 @@ impl Envelope {
     pub fn read_file(filename: &str) -> Result<Envelope> {
         let text = match fs::read_to_string(filename) {
             Ok(text) => text,
-            Err(e) => {
-                let msg = format!("Error reading envelope from: {} {}", filename, e);
-                eprintln!("\nERROR! {}\n", msg);
-                error!("{}", msg);
-                return Err(e.into());
-            }
+            Err(e) => return Err(e.into()),
         };
 
         match toml::from_str(&text) {

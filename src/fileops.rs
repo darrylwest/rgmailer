@@ -14,7 +14,7 @@ pub fn app_home() -> PathBuf {
     let home = env::var("HOME").expect("should have a home");
 
     let abs_home = fs::canonicalize(home.as_str()).expect("home should have an absolute path");
-    let full_home = abs_home.as_path().join(".ngmailer");
+    let full_home = abs_home.as_path().join(".rgmailer");
 
     full_home
 }

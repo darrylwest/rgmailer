@@ -10,7 +10,7 @@ use rgmailer::envelope::Envelope;
 use rgmailer::mailer;
 use rgmailer::settings::Settings;
 
-#[derive(Debug, Default, Parser)]
+#[derive(Clone, Debug, Default, Parser)]
 #[clap(name = "ngmailer", author, version, about, long_about = None)]
 pub struct Config {
     /// set verbose to show log message on the console
@@ -22,7 +22,7 @@ pub struct Config {
     pub envelope: String,
 
     /// specify the application home, defaults to ~/.rgmailer
-    #[clap(long, default_value_t = String::from("~/.rgmailer"))]
+    #[clap(long, default_value_t = String::from(".rgmailer"))]
     pub home: String,
 
     /// parse the envelope, create the message, login to the smtp server but skip the send
@@ -32,7 +32,17 @@ pub struct Config {
 
 fn process_request(config: Config, settings: Settings) -> Result<()> {
     info!("process reequest startup with config: {:?}", config);
-    let envelope = Envelope::read_file(config.envelope.as_str()).unwrap();
+    let filename = config.envelope.as_str();
+    let envelope = match Envelope::read_file(filename) {
+        Ok(envelope) => envelope,
+        Err(e) => {
+            let msg = format!("Error reading envelope from: {} {}", filename, e);
+            eprintln!("\nERROR! {}\n", msg);
+            error!("{}", msg);
+            return Err(e.into());
+        }
+    };
+
     // process the envelope if necessary
     let message = mailer::prepare_message(envelope);
 
@@ -66,20 +76,58 @@ fn configure_and_send(config: Config) -> Result<()> {
 
     match Settings::read(None) {
         Ok(settings) => process_request(config, settings),
+        Err(e) => Err(e)
+    }
+}
+
+fn run(config: Config) -> Result<()> {
+    match configure_and_send(config.clone()) {
+        Ok(_) => {
+            // now check for structure and mv from queue to sent
+            info!("move {} to sent folder", config.clone().envelope);
+            Ok(())
+        },
         Err(e) => {
-            error!("could not read settings file!");
+            let msg = format!("{}", e);
+            eprintln!("\nError! {}\n", msg);
+            error!("{e}");
             Err(e)
-        }
+        },
     }
 }
 
 fn main() -> Result<()> {
-    configure_and_send(Config::parse())
+    run(Config::parse())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_run() {
+        let config = Config {
+            home: "home".to_string(),
+            envelope: "tests/test-message.toml".to_string(),
+            dryrun: true,
+            verbose: false,
+        };
+
+        let _resp = run(config).expect("should pass");
+    }
+
+    #[test]
+    fn test_bad_run() {
+        let config = Config {
+            home: "home".to_string(),
+            envelope: "tests/no-file.toml".to_string(),
+            dryrun: false,
+            verbose: false,
+        };
+
+        let resp = run(config);
+        println!("{:?}", resp.err());
+    }
 
     #[test]
     fn test_configure_and_send() {
@@ -90,8 +138,7 @@ mod tests {
             verbose: true,
         };
 
-        let resp = configure_and_send(config);
-        println!("{:?}", resp)
+        let _resp = configure_and_send(config).expect("should be ok");
     }
 
     #[test]
