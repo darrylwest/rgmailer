@@ -39,7 +39,7 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
             let msg = format!("Error reading envelope from: {} {}", filename, e);
             eprintln!("\nERROR! {}\n", msg);
             error!("{}", msg);
-            return Err(e.into());
+            return Err(e);
         }
     };
 
@@ -76,7 +76,7 @@ fn configure_and_send(config: Config) -> Result<()> {
 
     match Settings::read(None) {
         Ok(settings) => process_request(config, settings),
-        Err(e) => Err(e)
+        Err(e) => Err(e),
     }
 }
 
@@ -86,13 +86,13 @@ fn run(config: Config) -> Result<()> {
             // now check for structure and mv from queue to sent
             info!("move {} to sent folder", config.clone().envelope);
             Ok(())
-        },
+        }
         Err(e) => {
             let msg = format!("{}", e);
             eprintln!("\nError! {}\n", msg);
             error!("{e}");
             Err(e)
-        },
+        }
     }
 }
 
