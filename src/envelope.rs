@@ -17,7 +17,7 @@ impl Envelope {
             Ok(text) => text,
             Err(e) => {
                 let msg = format!("Error reading envelope from: {} {}", filename, e);
-                eprintln!("{}", msg);
+                eprintln!("\nERROR! {}\n", msg);
                 error!("{}", msg);
                 return Err(e.into());
             }
@@ -30,7 +30,7 @@ impl Envelope {
             }
             Err(e) => {
                 let msg = format!("Error reading/parsing envelope from: {} {}", filename, e);
-                eprintln!("{}", msg);
+                eprintln!("\nERROR! {}\n", msg);
                 error!("{}", msg);
                 Err(e.into())
             }

@@ -3,9 +3,10 @@ use crate::otp::generate_otp;
 use crate::settings::{parse_creds, Settings};
 use anyhow::Result;
 use lettre::{Message, SmtpTransport, Transport};
+use log::{error, info};
 
 pub fn prepare_message(envelope: Envelope) -> Message {
-    println!("{:?}", envelope);
+    info!("to: {}, subjecy: {}", envelope.to, envelope.subject);
 
     // TODO: read to, from, subject and body from toml file
     let from = envelope.from;
@@ -15,7 +16,7 @@ pub fn prepare_message(envelope: Envelope) -> Message {
     let otp = generate_otp();
     let body = format!("{}\n{}", otp, envelope.body);
 
-    println!("otp: {} to: {}", otp, to);
+    info!("otp: {} to: {}", otp, to);
 
     Message::builder()
         .from(from.parse().unwrap())
@@ -40,7 +41,9 @@ pub fn send(settings: Settings, message: Message) -> Result<()> {
     match mailer.send(&message) {
         Ok(_) => Ok(()),
         Err(e) => {
-            eprint!("Could not send email: {:?}", e);
+            let msg = format!("Could not send email: {}", e);
+            eprint!("\nError! {}\n", msg);
+            error!("{}", msg);
             Err(e.into())
         }
     }
