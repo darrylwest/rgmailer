@@ -46,7 +46,7 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
     }
 }
 
-fn configure_request(config: Config) -> Result<()> {
+fn configure_and_send(config: Config) -> Result<()> {
     let mut log_config_file = "config/rolling.yaml";
 
     if config.verbose {
@@ -79,12 +79,26 @@ fn main() -> Result<()> {
     // get the config from cli
     let config = Config::parse();
     println!("cli: {:?}", config);
-    configure_request(config)
+    configure_and_send(config)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_configure_and_send() {
+        let config = Config {
+            home: "home".to_string(),
+            envelope: "tests/test-message.toml".to_string(),
+            dryrun: true,
+            verbose: true,
+        };
+
+        let resp = configure_and_send(config);
+        println!("{:?}", resp)
+
+    }
 
     #[test]
     fn proc_request() {
