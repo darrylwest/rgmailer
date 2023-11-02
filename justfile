@@ -24,6 +24,10 @@ docs:
 run:
     cargo run --bin rgmailer -- --dryrun home/queue/7mNdj105Ch0c.toml
 
+# send test email to dpw500
+send:
+    cargo run --bin rgmailer -- home/queue/7mNdj105Ch0c.toml
+
 # build the release
 release:
     clear

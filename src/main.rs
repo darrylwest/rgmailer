@@ -46,11 +46,7 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
     }
 }
 
-fn main() -> Result<()> {
-    // get the config from cli
-    let config = Config::parse();
-    println!("cli: {:?}", config);
-
+fn configure_request(config: Config) -> Result<()> {
     let mut log_config_file = "config/rolling.yaml";
 
     if config.verbose {
@@ -79,6 +75,13 @@ fn main() -> Result<()> {
     }
 }
 
+fn main() -> Result<()> {
+    // get the config from cli
+    let config = Config::parse();
+    println!("cli: {:?}", config);
+    configure_request(config)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -89,11 +92,31 @@ mod tests {
         let config = Config {
             home: "home".to_string(),
             envelope: "tests/test-message.toml".to_string(),
+            dryrun: false,
+            verbose: false,
+        };
+
+        match process_request(config, settings) {
+            Ok(_) => assert!(false),
+            _ => assert!(true),
+        }
+        // assert!(resp);
+    }
+
+    #[test]
+    fn proc_request_dryrun() {
+        let settings = Settings::read(Some(String::from("tests/test-settings.toml"))).unwrap();
+        let config = Config {
+            home: "home".to_string(),
+            envelope: "tests/test-message.toml".to_string(),
             dryrun: true,
             verbose: false,
         };
 
-        let _resp = process_request(config, settings).unwrap();
+        match process_request(config, settings) {
+            Ok(_) => assert!(true),
+            _ => assert!(false),
+        }
         // assert!(resp);
     }
 }
