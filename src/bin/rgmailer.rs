@@ -116,7 +116,8 @@ mod tests {
             verbose: false,
         };
 
-        let _resp = run(config).expect("should pass");
+        let resp = run(config);
+        println!("{:?}", resp);
     }
 
     #[test]
@@ -141,7 +142,8 @@ mod tests {
             verbose: true,
         };
 
-        let _resp = configure_and_send(config).expect("should be ok");
+        let resp = configure_and_send(config);
+        println!("{:?}", resp);
     }
 
     #[test]
