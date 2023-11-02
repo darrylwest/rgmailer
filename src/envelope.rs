@@ -13,7 +13,16 @@ pub struct Envelope {
 
 impl Envelope {
     pub fn read_file(filename: &str) -> Result<Envelope> {
-        let text = fs::read_to_string(filename)?;
+        let text = match fs::read_to_string(filename) {
+            Ok(text) => text,
+            Err(e) => {
+                let msg = format!("Error reading envelope from: {} {}", filename, e);
+                eprintln!("{}", msg);
+                error!("{}", msg);
+                return Err(e.into());
+            }
+        };
+
         match toml::from_str(&text) {
             Ok(envelope) => {
                 info!("envelope read and parsed from: {}", filename);
@@ -21,6 +30,7 @@ impl Envelope {
             }
             Err(e) => {
                 let msg = format!("Error reading/parsing envelope from: {} {}", filename, e);
+                eprintln!("{}", msg);
                 error!("{}", msg);
                 Err(e.into())
             }
