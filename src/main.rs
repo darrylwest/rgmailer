@@ -47,19 +47,28 @@ fn process_request(config: Config, settings: Settings) -> Result<()> {
 }
 
 fn main() -> Result<()> {
+    // get the config from cli
+    let config = Config::parse();
+    println!("cli: {:?}", config);
+
+    let mut log_config_file = "config/rolling.yaml";
+
+    if config.verbose {
+        info!("config the console logger");
+        log_config_file = "config/console-rolling.yaml";
+    }
+
     // read and embed the config; run-time write to the config folder then init the logger
     // let config_str = include_str!("../config/console.yaml");
     // println!("{}", config_str);
     // TODO check for the logs folder; if not found, then start the console
-    match log4rs::init_file("config/rolling.yaml", Default::default()) {
-        Ok(_) => info!("\n******************************************** logger started ******"),
+    let banner = "********************************************";
+    match log4rs::init_file(log_config_file, Default::default()) {
+        Ok(_) => info!("{} logger started {}", banner, banner),
         Err(e) => {
             eprintln!("error starting logger: {:?}", e);
         }
     }
-
-    let config = Config::parse();
-    println!("cli: {:?}", config);
 
     match Settings::read(None) {
         Ok(settings) => process_request(config, settings),

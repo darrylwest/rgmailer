@@ -52,7 +52,6 @@ pre:
 
 # cover - runs code test coverage report and writes to coverage folder
 cover:
-    tar xzf test-setup.tgz
     cargo tarpaulin --out html --output-dir coverage
 
 # start a http server in the coverage folder
