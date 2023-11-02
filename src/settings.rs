@@ -1,7 +1,10 @@
 use anyhow::Result;
 use lettre::transport::smtp::authentication::Credentials;
+use log::info;
 use serde_derive::Deserialize;
 use std::fs;
+
+const SETTINGS: &str = include_str!("../settings.toml");
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Smtp {
@@ -17,14 +20,14 @@ pub struct Settings {
 
 impl Settings {
     pub fn read(filename: Option<String>) -> Result<Settings> {
-        let filename = match filename {
-            Some(name) => name,
-            None => String::from("./settings.toml"),
+        let text: String = match filename {
+            Some(name) => {
+                info!("reading settings file: {}", name);
+                fs::read_to_string(name)?
+            }
+            _ => String::from(SETTINGS),
         };
 
-        println!("settings file: {}", filename);
-
-        let text = fs::read_to_string(filename)?;
         let settings: Settings = toml::from_str(&text)?;
 
         Ok(settings)
