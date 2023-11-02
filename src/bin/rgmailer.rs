@@ -7,8 +7,10 @@ use anyhow::Result;
 use clap::Parser;
 use log::{error, info, warn};
 use rgmailer::envelope::Envelope;
+use rgmailer::fileops;
 use rgmailer::mailer;
 use rgmailer::settings::Settings;
+use std::env;
 
 #[derive(Clone, Debug, Default, Parser)]
 #[clap(name = "ngmailer", author, version, about, long_about = None)]
@@ -31,7 +33,7 @@ pub struct Config {
 }
 
 fn process_request(config: Config, settings: Settings) -> Result<()> {
-    info!("process reequest startup with config: {:?}", config);
+    info!("process request startup with config: {:?}", config);
     let filename = config.envelope.as_str();
     let envelope = match Envelope::read_file(filename) {
         Ok(envelope) => envelope,
@@ -97,6 +99,7 @@ fn run(config: Config) -> Result<()> {
 }
 
 fn main() -> Result<()> {
+    env::set_current_dir(fileops::app_home())?;
     run(Config::parse())
 }
 
