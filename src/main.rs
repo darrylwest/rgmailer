@@ -76,10 +76,7 @@ fn configure_and_send(config: Config) -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    // get the config from cli
-    let config = Config::parse();
-    println!("cli: {:?}", config);
-    configure_and_send(config)
+    configure_and_send(Config::parse())
 }
 
 #[cfg(test)]
@@ -97,7 +94,6 @@ mod tests {
 
         let resp = configure_and_send(config);
         println!("{:?}", resp)
-
     }
 
     #[test]

@@ -93,6 +93,20 @@ mod tests {
     }
 
     #[test]
+    fn test_init_new_home() {
+        let home = PathBuf::from("tmp");
+        let folders = sub_folders(home.clone());
+
+        init_folders(home.clone()).unwrap();
+
+        for path in folders {
+            assert!(path.exists());
+        }
+
+        fs::remove_dir_all("tmp").expect("should remove tmp folders");
+    }
+
+    #[test]
     fn test_user_home() {
         let home = user_home();
         println!("user home: {}", home.display());
