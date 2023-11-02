@@ -16,6 +16,8 @@ pub fn app_home() -> PathBuf {
     let abs_home = fs::canonicalize(home.as_str()).expect("home should have an absolute path");
     let full_home = abs_home.as_path().join(".rgmailer");
 
+    info!("rgmailer home is {}", full_home.display());
+
     full_home
 }
 
