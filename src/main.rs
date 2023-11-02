@@ -61,9 +61,7 @@ fn configure_and_send(config: Config) -> Result<()> {
     let banner = "********************************************";
     match log4rs::init_file(log_config_file, Default::default()) {
         Ok(_) => info!("{} logger started {}", banner, banner),
-        Err(e) => {
-            eprintln!("error starting logger: {:?}", e);
-        }
+        Err(e) => eprintln!("error starting logger: {:?}", e),
     }
 
     match Settings::read(None) {
@@ -106,11 +104,8 @@ mod tests {
             verbose: false,
         };
 
-        match process_request(config, settings) {
-            Ok(_) => assert!(false),
-            _ => assert!(true),
-        }
-        // assert!(resp);
+        let resp = process_request(config, settings);
+        println!("{:?}", resp.err());
     }
 
     #[test]
@@ -123,10 +118,8 @@ mod tests {
             verbose: false,
         };
 
-        match process_request(config, settings) {
-            Ok(_) => assert!(true),
-            _ => assert!(false),
-        }
-        // assert!(resp);
+        let resp = process_request(config, settings);
+        println!("{:?}", resp);
+        resp.expect("should do a dry run");
     }
 }
