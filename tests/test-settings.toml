@@ -1,8 +1,11 @@
 
 [smtp]
-host = "smtp.gmail.net"
+host = "smtp.dreamhost.net"
 username = "tester@gmail.com"
 password = "mysecretpw"
 
-
+[gmail]
+host = "smtp.gmail.net"
+username = "tester@gmail.com"
+password = "mysecretpw"
 

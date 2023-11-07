@@ -46,9 +46,11 @@ mod tests {
         let expected = "should read the settings from: {} settings_file";
         let settings = Settings::read(Some(settings_file)).expect(expected);
 
-        assert_eq!(settings.smtp.host, "smtp.gmail.net");
-        assert_eq!(settings.smtp.username, "tester@gmail.com");
-        assert_eq!(settings.smtp.password, "mysecretpw");
+        let smtp = settings.smtp;
+
+        assert_eq!(smtp.host, "smtp.dreamhost.net");
+        assert_eq!(smtp.username, "tester@gmail.com");
+        assert_eq!(smtp.password, "mysecretpw");
     }
 
     #[test]
