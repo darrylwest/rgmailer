@@ -86,8 +86,7 @@ fn run(config: Config) -> Result<()> {
     match configure_and_send(config.clone()) {
         Ok(_) => {
             // now check for structure and mv from queue to sent
-            info!("move {} to sent folder", config.clone().envelope);
-            Ok(())
+            fileops::move_to_sent(&config.envelope)
         }
         Err(e) => {
             let msg = format!("{}", e);

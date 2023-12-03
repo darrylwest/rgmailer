@@ -4,12 +4,15 @@ use std::env;
 use std::ffi::OsStr;
 use std::fs;
 use std::path::{Component, PathBuf};
+use std::time::{SystemTime, UNIX_EPOCH};
 
+/// the user's home folder
 pub fn user_home() -> PathBuf {
     let home = env::var("HOME").expect("should have a home");
     PathBuf::from(home)
 }
 
+/// the application home folder
 pub fn app_home() -> PathBuf {
     let home = env::var("HOME").expect("should have a home");
 
@@ -21,6 +24,7 @@ pub fn app_home() -> PathBuf {
     full_home
 }
 
+/// list of sub-folders for the rgmailer application
 pub fn sub_folders(app_home: PathBuf) -> Vec<PathBuf> {
     let list = [
         app_home.as_path().join("queue"),
@@ -34,6 +38,7 @@ pub fn sub_folders(app_home: PathBuf) -> Vec<PathBuf> {
     Vec::from(list)
 }
 
+/// initialize the file structure
 pub fn init_folders(app_home: PathBuf) -> Result<()> {
     let folders = sub_folders(app_home);
     for folder in folders {
@@ -51,7 +56,22 @@ pub fn init_folders(app_home: PathBuf) -> Result<()> {
 
     Ok(())
 }
-// finds the absolute path; substibutes the filenames parent with to_target
+
+/// create a timestamp and mv the file to the sent folder with the ts
+pub fn move_to_sent(filename: &str) -> Result<()> {
+    info!("move {} to sent folder", filename);
+    let now = SystemTime::now().duration_since(UNIX_EPOCH);
+    let ts = now.unwrap().as_millis();
+
+    let path = PathBuf::from(filename);
+    let npath = path.file_name().unwrap().to_str().unwrap();
+    let ext = format!("-{}.toml", ts);
+    let npath = npath.to_string().replace(".toml", &ext);
+    let npath = PathBuf::from(format!("sent/{}", npath));
+    move_file(path, npath)
+}
+
+/// finds the absolute path; substibutes the filenames parent with to_target
 pub fn rename_from_to(filename: &str, to_target: &str) -> (PathBuf, PathBuf) {
     let path = PathBuf::from(filename);
     let abs_path = fs::canonicalize(path).unwrap();
@@ -68,6 +88,7 @@ pub fn rename_from_to(filename: &str, to_target: &str) -> (PathBuf, PathBuf) {
     (abs_path, to_path)
 }
 
+/// move a fiel from -> to
 pub fn move_file(from: PathBuf, to: PathBuf) -> Result<()> {
     match fs::rename(from, to) {
         Ok(_) => Ok(()),
