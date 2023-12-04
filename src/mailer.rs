@@ -1,5 +1,4 @@
 use crate::envelope::Envelope;
-use crate::otp::generate_otp;
 use crate::settings::{parse_creds, Settings};
 use anyhow::Result;
 use lettre::{Message, SmtpTransport, Transport};
@@ -13,10 +12,7 @@ pub fn prepare_message(envelope: Envelope) -> Message {
     let to = envelope.to;
 
     let subject = envelope.subject;
-    let otp = generate_otp();
-    let body = format!("{}\n{}", otp, envelope.body);
-
-    info!("otp: {} to: {}", otp, to);
+    let body = envelope.body;
 
     Message::builder()
         .from(from.parse().unwrap())
